@@ -1,0 +1,464 @@
+{% extends 'dashboard-templates/base.html' %}
+
+{% load static %}
+{% block content %}
+
+{% csrf_token %}
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'dashboard-index' %}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard-index' %}   ">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Components</span>
+            </a>
+        </li>
+
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+        <!-- Sidebar Message -->
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <!-- Topbar Search -->
+                
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                    
+
+                    <!-- Nav Item - Alerts -->
+                    
+
+                    <!-- Nav Item - Messages -->
+                    <p>Role: {{ admin_profile.get_role_display }}</p>
+
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Settings
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Activity Log
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    <a href="{% url 'logout' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Logout </a>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row">
+
+                    <div class="wrapper">
+                        <div class="container">
+                            <div class="filter">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="show-row">
+                                            <select class="form-control">
+                                                <option value="5" selected="selected">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="search-row">
+                                            <input type="text" name="search" class="form-control"
+                                                placeholder="Enter your keyword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="music" class="table table-responsive table-hover">
+                                <thead>
+                                    <tr class="myHead">
+                                        <th>#</th>
+                                        <th></th>
+                                        <th>SONG NAME</th>
+                                        <th>MOVIE</th>
+                                        <th>SINGER</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                {% if admin_profile and admin_profile.role == 2 %}
+                                <tbody>
+                                    {% for application in applications %}
+                                    <tr data-url="FQS7i2z1CoA">
+
+                                        <td></td>
+                                        <td>
+                                            <div class="thumb"></div>
+                                        </td>
+                                        <td>Main Tera Boyfriend</td>
+                                        <td>Raabta</td>
+                                        <td>Arijit Singh</td>
+                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr data-url="h2VbU22H1g8">
+                                        <td></td>
+                                        <td>
+                                            <div class="thumb"></div>
+                                        </td>
+                                        <td>Ik Vaari Aa</td>
+                                        <td>Raabta</td>
+                                        <td>Pritam</td>
+                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
+                                    </tr>
+                                    <tr data-url="bUDIm1SstAE">
+                                        <td></td>
+                                        <td>
+                                            <div class="thumb"></div>
+                                        </td>
+                                        <td>Phir Bhi Tumko Chaahunga</td>
+                                        <td>Half Girlfriend</td>
+                                        <td>Arijit Singh</td>
+                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
+                                    </tr>
+                                {% else %}
+                                    <p>У вас нет доступа к этой информации.</p>
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+                            <div class="text-center controller">
+                                <ul class="pagination"></ul>
+                                <ul class="pager">
+                                    <li><a href="javascript:void(0)" class="prev">Previous</a></li>
+                                    <li><a href="javascript:void(0)" class="next">Next</a></li>
+                                </ul>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="video_box">
+                        <div class="video_inner">
+                            <div class="modal-close">&times;</div>
+                            <div class="video_body">
+
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .wrapper {
+                            margin: 80px 0;
+                        }
+
+                        .thumb {
+                            width: 70px;
+                            height: 50px;
+                            overflow: hidden;
+                            position: relative;
+                        }
+
+                        .table>tbody>tr>td {
+                            vertical-align: middle;
+                        }
+
+                        .video_box {
+                            background: rgba(0, 0, 0, 0.54);
+                            width: 100%;
+                            top: 0;
+                            left: 0;
+                            height: 100%;
+                            position: fixed;
+                            z-index: 555;
+                            display: none;
+                        }
+
+                        .video_inner {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            margin: auto;
+                            width: 430px;
+                            height: 280px;
+                            background: #fff;
+                            padding: 15px;
+
+                        }
+
+                        .modal-close {
+                            position: absolute;
+                            top: 0;
+                            z-index: 5;
+                            background: #d64a4a;
+                            padding: 0px 11px;
+                            color: #fff;
+                            font-size: 34px;
+                            line-height: normal;
+                            right: -42px;
+                            cursor: pointer;
+                        }
+
+                        .video_body {
+                            width: 400px;
+                            height: 250px;
+                        }
+                    </style>
+                    <script>
+                        $(window).on('load', function () {
+
+
+                            // Add youtube thumbail image
+                            $('#music tbody tr').addClass('list');
+                            $('.list').each(function () {
+                                var youtube_video_id = $(this).attr('data-url');
+                                if (youtube_video_id.length == 11) {
+                                    var video_thumbnail = $('<img src="https://i.ytimg.com/vi/' + youtube_video_id + '/hqdefault.jpg" class="img-responsive">');
+                                    $(this).find('.thumb').append(video_thumbnail);
+                                }
+                                var jd = $(this).index() + 1
+                                $(this).find('td').eq(0).text(jd)
+                            });
+
+                            // select no of li
+                            var noOfLi = $('.list').length; // Total no of li
+                            var showNo = $('.show-row select').val()
+                            $('.show-row select').on('change', function (e) {
+                                showNo = $(this).val();
+                                myRemoveClass();
+                            });
+
+
+
+
+                            //select function
+                            function myRemoveClass() {
+                                //Pagination		
+                                var showNoOfLi = showNo,  //  Show now of li
+                                    showPage = Math.ceil(noOfLi / showNo), // pagination list
+                                    counter,
+                                    no = 0,
+                                    start = no,
+                                    end = showNoOfLi;
+
+                                $('.pagination').empty()
+                                for (counter = 1; counter <= showPage; counter++) {
+                                    $('<li><a href="javascript:void(0)" data-lt="' + counter + '">' + counter + '</a></li>').appendTo('.pagination');
+                                    $('.pagination li').eq(0).addClass('active');
+                                }
+                                $('#music tbody tr').removeClass('active-item').hide()
+                                $('#music tbody tr').slice(start, end).show().addClass('active-item');
+
+                                $('.prev').prop('disabled', true).parent('li').addClass('disabled');
+                                $('.next').prop('disabled', false).parent('li').removeClass('disabled');
+
+                                // click on pagination
+                                function myfunction(controller) {
+                                    return function () {
+                                        if (controller == 'nextPagination') {
+                                            no++;
+                                            $('.pagination li').removeClass('active')
+                                            $('.pagination li').eq(no).addClass('active');
+                                            start1 = showNoOfLi * no;
+                                            end1 = showNoOfLi * (no + 1);
+                                            $('#music tbody tr').removeClass('active-item').hide();
+                                            $('#music tbody tr').slice(start1, end1).show().addClass('active-item');
+                                            $('.prev').prop('disabled', false).parent('li').removeClass('disabled');
+                                            if (end1 >= noOfLi) {
+                                                $('.next').prop('disabled', true).parent('li').addClass('disabled');
+                                            }
+                                        }
+                                        else if (controller == 'prevPagination') {
+                                            no--;
+                                            $('.pagination li').removeClass('active')
+                                            $('.pagination li').eq(no).addClass('active');
+                                            start1 = showNoOfLi * no;
+                                            end1 = showNoOfLi * (no + 1);
+                                            $('#music tbody tr').removeClass('active-item').hide();
+                                            $('#music tbody tr').slice(start1, end1).show().addClass('active-item');
+                                            $('.next').prop('disabled', false).parent('li').removeClass('disabled');
+
+                                            if (no === 0) {
+                                                $('.prev').prop('disabled', true).parent('li').addClass('disabled');
+                                            }
+                                        }
+                                        else if (controller == 'dots') {
+                                            $('.pagination li').removeClass('active');
+                                            var thisIndex = $(this).addClass('active').index();
+                                            no = thisIndex;
+                                            start1 = showNoOfLi * no;
+                                            end1 = showNoOfLi * (no + 1);
+                                            $('#music tbody tr').removeClass('active-item').hide();
+                                            $('#music tbody tr').slice(start1, end1).show().addClass('active-item');
+
+                                            if (no > 0) {
+                                                $('.prev').prop('disabled', false).parent('li').removeClass('disabled');
+                                            } else {
+                                                $('.prev').prop('disabled', true).parent('li').addClass('disabled');
+                                            }
+                                            if (end1 >= noOfLi) {
+
+                                                $('.next').prop('disabled', true).parent('li').addClass('disabled');
+                                            } else {
+                                                $('.next').prop('disabled', false).parent('li').removeClass('disabled');
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $('.wrapper').on('click', '.next', myfunction('nextPagination'));
+                                $('.wrapper').on('click', '.prev', myfunction('prevPagination'));
+                                $('.wrapper').on('click', '.pagination li', myfunction('dots'));
+                            }
+
+
+
+                            myRemoveClass()
+
+
+
+
+
+                            //live search box
+                            $('.search-row input').on('keyup', function () {
+                                var value = $(this).val();
+                                var patt = new RegExp(value, "i");
+                                console.log(patt)
+                                $('#music').find('.active-item').each(function () {
+                                    if (!($(this).find('td').text().search(patt) >= 0)) {
+                                        $(this).not('.myHead').hide();
+                                    }
+                                    if (($(this).find('td').text().search(patt) >= 0)) {
+                                        $(this).show();
+                                    }
+
+                                });
+                            });
+
+
+
+                            // play video
+
+                            $('.wrapper').on('click', '.playBtn', function () {
+                                var videoId = $(this).parents('tr').attr('data-url')
+                                var videoWidth = $('.video_body').width(),
+                                    videoHeight = $('.video_body').height(),
+                                    iframe = $('<iframe width="'
+                                        + videoWidth
+                                        + '" height="'
+                                        + videoHeight
+                                        + '" src="https://www.youtube.com/embed/'
+                                        + videoId
+                                        + '" frameborder="0" allowfullscreen></iframe>');
+                                $('.video_body').html(iframe);
+                                $('.video_box').fadeIn(500)
+                                $('body').addClass('modal-open');
+                            });
+
+                            $('.modal-close').click(function () {
+                                $('.video_box').fadeOut(500)
+                                $('body').removeClass('modal-open');
+                            })
+
+
+                        })
+
+
+
+
+
+
+                    </script>
+                </div>
+
+            </div>
+            <!-- End of Main Content -->
+
+            {% endblock %}
