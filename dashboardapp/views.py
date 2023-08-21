@@ -30,17 +30,50 @@ def login(request):
 
 @login_required(login_url='login')
 def view_applications(request):
-    try:
+    if request.method == 'POST' and 'approve' in request.POST:
+        # Получаем ID заявки из POST-запроса
+        application_id = request.POST.get('application_id')
+        # Получаем объект заявки по ID
+        application = JobApplication.objects.get(id=application_id)
+        
+        # Получаем профиль администратора, который делает заявку
         admin_profile = AdminProfile.objects.get(user=request.user)
-    except AdminProfile.DoesNotExist:
-        admin_profile = None
-
-    if admin_profile and admin_profile.role == 2:
-        applications = JobApplication.objects.all()
+        
+        # Проверяем, что администратор на этапе одобрения заявки
+        if admin_profile.role == application.current_admin_stage :
+            # Увеличиваем этап заявки
+            application.current_admin_stage  += 1
+            application.save()
+        
+        # Перенаправляем на страницу с заявками
+        return redirect('dashboard-index')
+    
+    admin_profile = AdminProfile.objects.filter(user=request.user).first()
+    
+    if admin_profile:
+        applications = JobApplication.objects.filter(approval_status='pending', current_admin_stage=admin_profile.role)
     else:
         applications = JobApplication.objects.none()
-
+        
+    if request.method == 'POST':
+        application_id = request.POST.get('application_id')
+        action = request.POST.get('action')
+        
+        if action == 'approve':
+            application = JobApplication.objects.get(id=application_id)
+            # Одобрить заявку
+            application.approval_status = 'approved'
+            application.save()
+        
+        elif action == 'reject':
+            application = JobApplication.objects.get(id=application_id)
+            # Отклонить заявку
+            application.approval_status = 'rejected'
+            application.save()
+        
+        return redirect('dashboard-index')
     return render(request, 'dashboard-templates/dashboard-index.html', {'applications': applications, 'admin_profile': admin_profile})
+
 
 
 def register(request):
@@ -48,26 +81,33 @@ def register(request):
         username = request.POST['username']
         last_name = request.POST['last_name']
         email = request.POST['email']
+        admin_role = request.POST.get('admin_role') 
         password = request.POST['password']
         confirm_password = request.POST['password2']
-        for usernames in User.objects.all():
-                if usernames.username == username:
+
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'This username is already taken.')
+            return redirect('register')
+        else:
+            if password == confirm_password:
+                if username == "" or len(username) < 2 or last_name == "": 
+                    messages.error(request, 'Usename too short')
+                    return redirect('register')
+                elif 8 > len(password):
+                    messages.error(request, 'This password is too short. It must contain at least 8 characters.')
                     return redirect('register')
                 else:
-                    if password == confirm_password:
-                        if username == "" or len(username) < 2 or last_name == "": 
-                            messages.error(request, 'Usename too short')
-                            return redirect('register')
-                        elif 8 > len(password):
-                            messages.error(request, 'This password is too short. It must contain at least 8 characters.')
-                            return redirect('register')
-                        else:
-                            user = User.objects.create_user(username=username, email=email, last_name=last_name, password=password) 
-                            auth_login(request, user)
-                            response = redirect('home') 
-                            response.set_cookie('cookies.authorization', str(user.id))
-                            user.save()
-                            return response
+                    user = User.objects.create_user(username=username, email=email, last_name=last_name, password=password) 
+                    auth_login(request, user)
+                    response = redirect('home') 
+
+                    admin_profile = AdminProfile.objects.create(user=user, role=admin_role)
+                    admin_profile.save()
+
+                    response.set_cookie('cookies.authorization', str(user.id))
+                    user.save()
+                    return response
     else:
         return render(request, 'dashboard-templates/register.html')
 
