@@ -13,6 +13,7 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
+                            
                             <form class="user" method="POST" action="{% url 'register' %}">
                                 {% csrf_token %}
                                 <div class="form-group row">
@@ -30,11 +31,11 @@
                                         placeholder="Email Address">
                                 </div>
                                 <div class="form-group">
-                                    <select id="dropdown" class="form-control">
+                                    <select id="dropdown" class="form-control" name="admin_role">
                                         <option value="" disabled selected>Admin Role</option>
-                                        <option value="вариант1">Вариант 1</option>
-                                        <option value="вариант2">Вариант 2</option>
-                                        <option value="вариант3">Вариант 3</option>
+                                        <option value="2">Вариант 1</option>
+                                        <option value="3">Вариант 2</option>
+                                        <option value="4">Вариант 3</option>
                                     </select>
 
 
@@ -48,7 +49,10 @@
                                         <input type="password"  name = "password2" class="form-control form-control-user"
                                             id="exampleRepeatPassword" placeholder="Repeat Password">
                                     </div>
+                                    
                                 </div>
+                                <hr>
+                                {% include "dashboard-templates/message.html" %}
                                 <input type="submit" name="register" class="btn btn-primary btn-user btn-block" value="Register">
                                 </a>
                                 

@@ -73,19 +73,18 @@
                 </button>
 
                 <!-- Topbar Search -->
-                
+
 
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
 
                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                    
+
 
                     <!-- Nav Item - Alerts -->
-                    
+
 
                     <!-- Nav Item - Messages -->
-                    <p>Role: {{ admin_profile.get_role_display }}</p>
 
 
                     <!-- Nav Item - User Information -->
@@ -111,7 +110,8 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal"
+                                data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -138,87 +138,69 @@
 
                     <div class="wrapper">
                         <div class="container">
-                            <div class="filter">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="show-row">
-                                            <select class="form-control">
-                                                <option value="5" selected="selected">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4">
-                                        <div class="search-row">
-                                            <input type="text" name="search" class="form-control"
-                                                placeholder="Enter your keyword">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+
                             <table id="music" class="table table-responsive table-hover">
                                 <thead>
                                     <tr class="myHead">
-                                        <th>#</th>
-                                        <th></th>
-                                        <th>SONG NAME</th>
-                                        <th>MOVIE</th>
-                                        <th>SINGER</th>
-                                        <th></th>
+                                        <th>id</th>
+                                        <th>Ismi</th>
+                                        <th>Familiya</th>
+                                        <th>Tugelgan</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Resume</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-                                {% if admin_profile and admin_profile.role == 2 %}
                                 <tbody>
+                                    {% if admin_profile %}
                                     {% for application in applications %}
-                                    <tr data-url="FQS7i2z1CoA">
+                                    <tr >
 
-                                        <td></td>
-                                        <td>
-                                            <div class="thumb"></div>
+                                        <td>{{ application.id }}</td>
+                                        <td>{{ application.first_name }}</td>
+                                        <td>{{ application.last_name }}</td>
+                                        <td>{{ application.birtday }}</td>
+                                        <td>{{ application.email }}</td>
+                                        <td>{{ application.gender }}</td>
+                                        <td><a href="{{ application.resume.url  }}">Resume</a></td>
+                                        <td>Статус:
+                                            {% if application.approval_status == 'pending' %}
+                                                Ожидает одобрения
+                                            {% elif application.approval_status == 'approved' %}
+                                                Одобрено
+                                            {% elif application.approval_status == 'rejected' %}
+                                                Отклонено
+                                            {% endif %}
                                         </td>
-                                        <td>Main Tera Boyfriend</td>
-                                        <td>Raabta</td>
-                                        <td>Arijit Singh</td>
-                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
-                                    </tr>
-                                    {% endfor %}
-                                    <tr data-url="h2VbU22H1g8">
-                                        <td></td>
+
                                         <td>
-                                            <div class="thumb"></div>
+                                            {% if admin_profile.role <= application.current_admin_stage  and application.approval_status == 'pending' %}
+                                                <form method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="application_id" value="{{ application.id }}">
+                                                    <button type="submit" name="approve">Одобрить</button>
+                                                    <button type="submit" name="reject">Отклонить</button>
+                                                </form>
+                                            {% elif application.approval_status == 'approved' %}
+                                                Одобрено
+                                            {% elif application.approval_status == 'rejected' %}
+                                                Отклонено
+                                            {% endif %}
                                         </td>
-                                        <td>Ik Vaari Aa</td>
-                                        <td>Raabta</td>
-                                        <td>Pritam</td>
-                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
                                     </tr>
-                                    <tr data-url="bUDIm1SstAE">
-                                        <td></td>
-                                        <td>
-                                            <div class="thumb"></div>
-                                        </td>
-                                        <td>Phir Bhi Tumko Chaahunga</td>
-                                        <td>Half Girlfriend</td>
-                                        <td>Arijit Singh</td>
-                                        <td><a href="javascript:void(0)" class="btn btn-info playBtn">Play</td>
-                                    </tr>
-                                {% else %}
+                                {% endfor %}
+
+                                    {% else %}
                                     <p>У вас нет доступа к этой информации.</p>
-                                {% endif %}
+                                    {% endif %}
 
 
                                 </tbody>
                             </table>
-                            <div class="text-center controller">
-                                <ul class="pagination"></ul>
-                                <ul class="pager">
-                                    <li><a href="javascript:void(0)" class="prev">Previous</a></li>
-                                    <li><a href="javascript:void(0)" class="next">Next</a></li>
-                                </ul>
-                            </div>
+
 
 
                         </div>
