@@ -76,7 +76,10 @@
 
 
                 <!-- Topbar Navbar -->
-                <ul class="navbar-nav ml-auto">
+                
+                <ul class="navbar-nav ml-auto" style="display: flex;
+                align-items: center;
+                gap: 40px;">
 
                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
 
@@ -85,7 +88,15 @@
 
 
                     <!-- Nav Item - Messages -->
+<<<<<<< Updated upstream
 
+=======
+                    <li class="nav-item dropdown no-arrow">
+                        {% if admin_profile %}
+                        <p class="d-none d-sm-inline-block  btn-sm btn-primary shadow-sm">Ваша роль: {{ admin_profile.get_role_display }}</p>
+                        {% endif %}
+                    </li>
+>>>>>>> Stashed changes
 
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
@@ -95,6 +106,7 @@
                             <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                         </a>
                         <!-- Dropdown - User Information -->
+<<<<<<< Updated upstream
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                             aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="#">
@@ -116,6 +128,9 @@
                                 Logout
                             </a>
                         </div>
+=======
+
+>>>>>>> Stashed changes
                     </li>
 
                 </ul>
@@ -130,7 +145,7 @@
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                     <a href="{% url 'logout' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Logout </a>
+                            class="fa-solid fa-door-open" style="color: #ff0000;"></i> Logout </a>
                 </div>
 
                 <!-- Content Row -->
@@ -148,15 +163,22 @@
                                         <th>Familiya</th>
                                         <th>Tugelgan</th>
                                         <th>Email</th>
+<<<<<<< Updated upstream
                                         <th>Gender</th>
                                         <th>Resume</th>
                                         <th>Status</th>
+=======
+                                        <th>Telephon</th>
+                                        <th>Gender</th>
+                                        <th>Resume</th>
+>>>>>>> Stashed changes
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if admin_profile %}
                                     {% for application in applications %}
+<<<<<<< Updated upstream
                                     <tr >
 
                                         <td>{{ application.id }}</td>
@@ -192,6 +214,36 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
+=======
+                                    <tr>
+
+                                        <td>{{ application.id }}</td>
+                                        <td>{{ application.first_name }}</td>
+                                        <td>{{ application.last_name }}</td>
+                                        <td>{{ application.birtday }}</td>
+                                        <td>{{ application.email }}</td>
+                                        <td>{{ application.phone }}</td>
+                                        <td>{{ application.gender }}</td>
+                                        <td><a href="{{ application.resume.url  }}">Resume</a></td>
+
+
+                                        <td>
+                                            {% if admin_profile.role <= application.current_admin_stage %} <form
+                                                method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="application_id" value="{{ application.id }}">
+                                                <button type="submit" name="action" value="approve"
+                                                    style="border: 0; background-color: transparent; font-size: 21px;"><i
+                                                        class="fa-solid fa-check" style="color: #00f53d;"></i></button>
+                                                <button type="submit" name="action" value="reject"
+                                                    style="border: 0; background-color: transparent; font-size: 21px;"><i
+                                                        class="fa-solid fa-xmark" style="color: #f50000;"></i></button>
+                                                </form>
+                                                {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+>>>>>>> Stashed changes
 
                                     {% else %}
                                     <p>У вас нет доступа к этой информации.</p>

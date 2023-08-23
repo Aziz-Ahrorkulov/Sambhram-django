@@ -30,6 +30,7 @@ def login(request):
 
 @login_required(login_url='login')
 def view_applications(request):
+<<<<<<< Updated upstream
     if request.method == 'POST' and 'approve' in request.POST:
         # Получаем ID заявки из POST-запроса
         application_id = request.POST.get('application_id')
@@ -47,6 +48,9 @@ def view_applications(request):
         
         # Перенаправляем на страницу с заявками
         return redirect('dashboard-index')
+=======
+        
+>>>>>>> Stashed changes
     
     admin_profile = AdminProfile.objects.filter(user=request.user).first()
     
@@ -61,9 +65,28 @@ def view_applications(request):
         
         if action == 'approve':
             application = JobApplication.objects.get(id=application_id)
+<<<<<<< Updated upstream
             # Одобрить заявку
             application.approval_status = 'approved'
             application.save()
+=======
+            # Получаем ID заявки из POST-запроса
+            application_id = request.POST.get('application_id')
+            # Получаем объект заявки по ID
+            application = JobApplication.objects.get(id=application_id)
+
+            # Получаем профиль администратора, который делает заявку
+            admin_profile = AdminProfile.objects.get(user=request.user)
+
+            # Проверяем, что администратор на этапе одобрения заявки
+            if admin_profile.role == application.current_admin_stage :
+                # Увеличиваем этап заявки
+                application.current_admin_stage  += 1
+                application.save()
+
+            # Перенаправляем на страницу с заявками
+            return redirect('dashboard-index')
+>>>>>>> Stashed changes
         
         elif action == 'reject':
             application = JobApplication.objects.get(id=application_id)
