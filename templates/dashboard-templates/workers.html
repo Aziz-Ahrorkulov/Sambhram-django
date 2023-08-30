@@ -22,8 +22,8 @@
         <hr class="sidebar-divider my-0">
 
         <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-            <a class="nav-link" href="{% url 'dashboard-index' %}   ">
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'dashboard-index' %}   ">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
@@ -35,8 +35,8 @@
 
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'dashboard-workers' %}"  data-target="#collapseTwo"
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard-workers' %}"  data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Components</span>
@@ -76,7 +76,7 @@
 
 
                 <!-- Topbar Navbar -->
-                
+
                 <ul class="navbar-nav ml-auto" style="display: flex;
                 align-items: center;
                 gap: 40px;">
@@ -90,7 +90,8 @@
                     <!-- Nav Item - Messages -->
                     <li class="nav-item dropdown no-arrow">
                         {% if admin_profile %}
-                        <p class="d-none d-sm-inline-block  btn-sm btn-primary shadow-sm">Ваша роль: {{ admin_profile.get_role_display }}</p>
+                        <p class="d-none d-sm-inline-block  btn-sm btn-primary shadow-sm">Ваша роль: 
+                            {{ admin_profile.get_role_display }}</p>
                         {% endif %}
                     </li>
 
@@ -114,68 +115,110 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                    <a href="{% url 'logout' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fa-solid fa-door-open" style="color: #ff0000;"></i> Logout </a>
                 </div>
 
-                <!-- Content Row -->
                 <div class="row">
-
                     <div class="wrapper">
                         <div class="container">
+                            <div class="filter-container">
+                                <ul id="category-filter">
+                                    <li data-category="all"><a href="{% url 'dashboard-workers' %}">All</li></a>
+                                    {% for job in jobs %}
+                                    <li><a href="{% url 'dashboard-workers' %}?job={{ job.slug }}"  style="text-decoration: none;">{{ job.title }}</li></a>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <style>
+                                .filter-container {
+                                    margin: 20px;
+                                }
 
+                                #category-filter {
+                                    list-style: none;
+                                    padding: 0;
+                                    display: flex;
+                                }
 
+                                #category-filter li {
+                                    margin-right: 8px;
+                                    cursor: pointer;
+                                    
+                                    padding: 3px;
+                                    border: 1px solid #ccc;
+                                    border-radius: 15px;
+                                }
+                                #category-filter li:hover {
+                                    background-color: #f2f2f2;
+                                    
+                                }
+
+                                #data-list {
+                                    list-style: none;
+                                    padding: 0;
+                                }
+
+                                #data-list li {
+                                    margin-bottom: 10px;
+                                    padding: 8px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 5px;
+                                }
+                            </style>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    const categoryFilter = document.getElementById('category-filter');
+                                    const dataItems = document.querySelectorAll('#data-list li');
+
+                                    categoryFilter.addEventListener('click', function (event) {
+                                        if (event.target.tagName === 'LI') {
+                                            const selectedCategory = event.target.getAttribute('data-category');
+
+                                            dataItems.forEach(item => {
+                                                if (selectedCategory === 'all' || item.getAttribute('data-category') === selectedCategory) {
+                                                    item.style.display = 'block';
+                                                } else {
+                                                    item.style.display = 'none';
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            </script>
                             <table id="music" class="table table-responsive table-hover">
                                 <thead>
                                     <tr class="myHead">
                                         <th>id</th>
                                         <th>Ismi</th>
                                         <th>Familiya</th>
-                                        <th>Tugelgan</th>
+                                        <th>Nomer</th>
                                         <th>Email</th>
-                                        <th>Telephon</th>
+                                        <th>Tugelgan Kuni</th>
                                         <th>Gender</th>
-                                        <th>Ish</th>
-                                        <th>Resume</th>
-                                        <th>Actions</th>
+                                        <th>Ishi</th>
+
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if admin_profile %}
-                                    {% for application in applications %}
+                                    {% for worker in workers %}
                                     <tr>
-                                        <td>{{ application.id }}</td>
-                                        <td>{{ application.first_name }}</td>
-                                        <td>{{ application.last_name }}</td>
-                                        <td>{{ application.birtday }}</td>
-                                        <td>{{ application.email }}</td>
-                                        <td>{{ application.phone }}</td>
-                                        <td>{{ application.gender }}</td>
-                                        <td>{{ application.job.title }}</td>
-                                        <td><a href="{% url 'download_resume' application.id %}" target="_blank">Resume</a></td>
-
+                                        <td>{{ worker.id }}</td>
                                         <td>
-                                            {% if admin_profile.role <= application.current_admin_stage %} <form
-                                                method="post">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="application_id" value="{{ application.id }}">
-                                                <button type="submit" name="action" value="approve"
-                                                    style="border: 0; background-color: transparent; font-size: 21px;"><i
-                                                        class="fa-solid fa-check" style="color: #00f53d;"></i></button>
-                                                <button type="submit" name="action" value="reject"
-                                                    style="border: 0; background-color: transparent; font-size: 21px;"><i
-                                                        class="fa-solid fa-xmark" style="color: #f50000;"></i></button>
-                                                </form>
-                                                {% endif %}
+                                            {{ worker.first_name }}
                                         </td>
+                                        <td>{{ worker.last_name }}</td>
+                                        <td>{{ worker.phone }}</td>
+                                        <td>{{ worker.email }}</td>
+                                        <td>{{ worker.birtday }}</td>
+                                        <td>{{ worker.gender }}</td>
+                                        <td>{{ worker.job }}</td>
                                     </tr>
                                     {% endfor %}
-                                    {% endif %}
 
 
                                 </tbody>
                             </table>
-
+                            
 
 
                         </div>
@@ -416,6 +459,4 @@
                 </div>
 
             </div>
-            <!-- End of Main Content -->
-
             {% endblock %}

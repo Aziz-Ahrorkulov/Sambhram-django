@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import AdminProfile
-from forms_app.models import JobApplication
+from .models import AdminProfile, Workers
+from forms_app.models import JobApplication, Job
 from django.contrib.auth import logout,  authenticate, login as auth_login
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.http import FileResponse
 # Create your views here.
 
 def login(request):
@@ -30,30 +31,14 @@ def login(request):
 
 @login_required(login_url='login')
 def view_applications(request):
-<<<<<<< Updated upstream
-    if request.method == 'POST' and 'approve' in request.POST:
-        # Получаем ID заявки из POST-запроса
-        application_id = request.POST.get('application_id')
-        # Получаем объект заявки по ID
-        application = JobApplication.objects.get(id=application_id)
+
         
-        # Получаем профиль администратора, который делает заявку
-        admin_profile = AdminProfile.objects.get(user=request.user)
-        
-        # Проверяем, что администратор на этапе одобрения заявки
-        if admin_profile.role == application.current_admin_stage :
-            # Увеличиваем этап заявки
-            application.current_admin_stage  += 1
-            application.save()
         
         # Перенаправляем на страницу с заявками
-        return redirect('dashboard-index')
-=======
         
->>>>>>> Stashed changes
     
     admin_profile = AdminProfile.objects.filter(user=request.user).first()
-    
+
     if admin_profile:
         applications = JobApplication.objects.filter(approval_status='pending', current_admin_stage=admin_profile.role)
     else:
@@ -65,16 +50,7 @@ def view_applications(request):
         
         if action == 'approve':
             application = JobApplication.objects.get(id=application_id)
-<<<<<<< Updated upstream
-            # Одобрить заявку
-            application.approval_status = 'approved'
-            application.save()
-=======
-            # Получаем ID заявки из POST-запроса
-            application_id = request.POST.get('application_id')
-            # Получаем объект заявки по ID
-            application = JobApplication.objects.get(id=application_id)
-
+        
             # Получаем профиль администратора, который делает заявку
             admin_profile = AdminProfile.objects.get(user=request.user)
 
@@ -83,11 +59,8 @@ def view_applications(request):
                 # Увеличиваем этап заявки
                 application.current_admin_stage  += 1
                 application.save()
-
-            # Перенаправляем на страницу с заявками
             return redirect('dashboard-index')
->>>>>>> Stashed changes
-        
+    
         elif action == 'reject':
             application = JobApplication.objects.get(id=application_id)
             # Отклонить заявку
@@ -135,6 +108,34 @@ def register(request):
         return render(request, 'dashboard-templates/register.html')
 
 
+def workers(request):
+    jobs = Job.objects.all()
+    workers = Workers.objects.all()
+
+    active_category = request.GET.get('job', '')
+    admin_profile = AdminProfile.objects.filter(user=request.user).first()
+
+    if active_category:
+        workers = workers.filter(job__slug=active_category)
+
+    context = {
+        'jobs' : jobs,
+        'workers' : workers ,
+        'active_category' : active_category,
+        'admin_profile' : admin_profile
+    }
+
+    return render(request, 'dashboard-templates/workers.html', context)
+
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+def download_resume(request, application_id):
+    application = JobApplication.objects.get(id=application_id)
+    response = FileResponse(application.resume)
+    response['Content-Disposition'] = f'attachment; filename="{application.resume.name}"'
+    return response
+
+def page_not_found(request, exception):
+    return render(request, 'dashboard-templates/404.html', status=404)

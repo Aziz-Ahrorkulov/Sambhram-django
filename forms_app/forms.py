@@ -1,5 +1,5 @@
 from django import forms
-from .models import JobApplication, Gender
+from .models import JobApplication, Gender, Job
 from phonenumber_field.formfields import PhoneNumberField
 
 class JobApplicationForm(forms.ModelForm):
@@ -11,9 +11,9 @@ class JobApplicationForm(forms.ModelForm):
     resume = forms.FileField(label='File', widget=forms.FileInput(attrs={'type': 'file', 'name': 'resume', 'accept' : '.pdf,.doc,.docx', 'id' : 'resume'}))
     birtday = forms.DateField(label='Date', widget=forms.DateInput(attrs={'id': 'birthdayDate', 'type': 'date', 'class': 'form-control form-control-lg',}))
     gender = forms.ChoiceField(choices=Gender.choices, widget=forms.RadioSelect(attrs={'class' : 'form-check-input', 'name' : 'inlineRadioOptions', 'type' : 'radio'}))
-
+    job = forms.ModelChoiceField(queryset=Job.objects.all(), widget=forms.Select(attrs={'class': 'form-control form-control-lg'}))
 
 
     class Meta:
         model = JobApplication
-        fields = ['first_name', 'last_name', 'email', 'phone', 'birtday', 'resume', 'gender']
+        fields = ['first_name', 'last_name', 'email', 'phone', 'birtday', 'job', 'resume', 'gender']
